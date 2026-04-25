@@ -79,8 +79,102 @@
   .nav-cta{display:inline-flex; align-items:center; gap:10px; background:var(--ink); color:var(--cream); padding:11px 18px; border-radius:999px; font-size:13.5px; font-weight:500; transition:transform .2s, background .2s}
   .nav-cta:hover{background:var(--accent); transform:translateY(-1px)}
   .nav-cta svg{width:14px; height:14px}
-  .burger{display:none; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); align-items:center; justify-content:center}
-  @media (max-width:900px){ .nav-links{display:none} .burger{display:inline-flex} .nav-cta{display:none} }
+  .burger{display:none; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); align-items:center; justify-content:center; position:relative; z-index:110}
+  @media (max-width:900px){ 
+    .nav-links{display:none} 
+    .burger{display:inline-flex} 
+    .nav-cta{display:inline-flex; padding: 10px 16px; font-size: 13px;}
+  }
+  @media (max-width:640px){
+    .nav-cta{padding: 8px 12px; font-size: 11px; gap: 6px;}
+    .nav-cta svg{width: 12px; height: 12px;}
+    .brand{font-size: 18px; gap: 8px;}
+    .brand .dot{width: 8px; height: 8px;}
+    .nav-inner{padding: 14px 20px; gap: 12px;}
+  }
+
+  /* =========== MOBILE MENU =========== */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 120px 32px 40px;
+    transform: translateX(100%);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: hidden;
+  }
+  .mobile-menu.open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  .mobile-menu::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 101;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08  0 0 0 0 0.07  0 0 0 0 0.05  0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.5'/></svg>");
+  }
+  .mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: relative;
+    z-index: 102;
+  }
+  .mobile-menu-links a {
+    font-family: "Fraunces";
+    font-size: clamp(38px, 10vw, 56px);
+    font-weight: 360;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .mobile-menu.open .mobile-menu-links a {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .mobile-menu.open .mobile-menu-links a:nth-child(1) { transition-delay: 0.1s; }
+  .mobile-menu.open .mobile-menu-links a:nth-child(2) { transition-delay: 0.15s; }
+  .mobile-menu.open .mobile-menu-links a:nth-child(3) { transition-delay: 0.2s; }
+  .mobile-menu.open .mobile-menu-links a:nth-child(4) { transition-delay: 0.25s; }
+  .mobile-menu.open .mobile-menu-links a:nth-child(5) { transition-delay: 0.3s; }
+  .mobile-menu.open .mobile-menu-links a:nth-child(6) { transition-delay: 0.35s; }
+
+  .mobile-menu-footer {
+    margin-top: auto;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 102;
+  }
+  .mobile-menu-social {
+    display: flex;
+    gap: 24px;
+  }
+  .mobile-menu-social a {
+    font-family: "JetBrains Mono";
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .burger.active svg path:nth-child(1) { transform: translateY(5px) rotate(45deg); transform-origin: center; }
+  .burger.active svg path:nth-child(2) { opacity: 0; }
+  .burger.active svg path:nth-child(3) { transform: translateY(-5px) rotate(-45deg); transform-origin: center; }
+  .burger svg path { transition: transform 0.3s, opacity 0.3s; }
 
   /* =========== HERO =========== */
   .hero{position:relative; padding:60px 0 80px; overflow:hidden}
@@ -848,11 +942,33 @@
       Erstgespräch buchen
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7V15"/></svg>
     </a>
-    <button class="burger" aria-label="Menü">
-      <svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1h16M1 6h16M1 11h16"/></svg>
+    <button class="burger" aria-label="Menü" aria-expanded="false" aria-controls="mobile-menu">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M1 1h18"/>
+        <path d="M1 7h18"/>
+        <path d="M1 13h18"/>
+      </svg>
     </button>
   </div>
 </nav>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu-links">
+    <a href="#leistungen">Leistungen</a>
+    <a href="#prozess">Prozess</a>
+    <a href="#ueber">Über Heidi</a>
+    <a href="#stimmen">Stimmen</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="mobile-menu-footer">
+    <div class="mobile-menu-social">
+      <a href="https://www.linkedin.com/in/heidi-ott-b7b820183" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.instagram.com/hrconsultingott/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    <div style="font-size:12px; color:var(--muted)">© 2026 Recuvia · Heidi Ott, Berlin</div>
+  </div>
+</div>
 
 
 <!-- HERO -->
@@ -1510,6 +1626,38 @@
 </div>
 
 <script>
+
+  /* ============ MOBILE MENU ============ */
+  const burger = document.querySelector('.burger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileLinks = mobileMenu.querySelectorAll('a');
+
+  function toggleMenu(force) {
+    const isOpen = typeof force === 'boolean' ? force : !mobileMenu.classList.contains('open');
+    mobileMenu.classList.toggle('open', isOpen);
+    burger.classList.toggle('active', isOpen);
+    burger.setAttribute('aria-expanded', String(isOpen));
+    mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  }
+
+  if (burger) {
+    burger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+  }
+
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => toggleMenu(false));
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+      toggleMenu(false);
+    }
+  });
 
   // Reveal on scroll
   const io = new IntersectionObserver((entries) => {
